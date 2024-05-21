@@ -80,7 +80,7 @@ extension Nophan {
                 let trackingRequest = try self.prepareRequest(for: event)
                 try await self.networkEngine.request(request: trackingRequest)
             } catch {
-                Log.console("Failed to track Event", .error, .nophan)
+                Log.console("Failed to track Event: \(event.name)", .error, .nophan)
             }
         }
     }
