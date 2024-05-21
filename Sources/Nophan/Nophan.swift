@@ -152,7 +152,7 @@ extension Nophan {
     // Add parameters from the Configuration
     private func configurationParameters(configuration: NophanConfiguration?) -> [String:Any] {
         guard let configuration else { return [:] }
-        return [
+        var parameters = [
             "app_version": configuration.appVersion,
             "device_model": configuration.deviceModel,
             "os_version": configuration.iosVersion,
@@ -160,6 +160,10 @@ extension Nophan {
             "locale": configuration.locale,
             "os": configuration.operatingSystem
         ]
+        if let user = configuration.userId {
+            parameters["user"] = user
+        }
+        return parameters
     }
     
     // Get a unique persisting device ID from the Keychain.
