@@ -20,9 +20,10 @@ internal class NetworkEngine: Networking {
         do {
             urlRequest.httpBody = try JSONSerialization.data(withJSONObject: request.parameters)
             URLSession(configuration: .default).dataTask(with: urlRequest)
-            let (_, response) = try await URLSession.shared.data(for: urlRequest)
+            let (data, response) = try await URLSession.shared.data(for: urlRequest)
             guard let httpResponse = response as? HTTPURLResponse,
                       httpResponse.statusCode >= 200 && httpResponse.statusCode <= 299 else {
+                print(String(data: data, encoding: .utf8) as Any)
                 throw NophanError.NetworkRequestError
             }
             retryFailedRequests()
