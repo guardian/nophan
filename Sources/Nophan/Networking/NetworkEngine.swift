@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import Qalam
 
 internal class NetworkEngine: Networking {
     
@@ -23,7 +24,7 @@ internal class NetworkEngine: Networking {
             let (data, response) = try await URLSession.shared.data(for: urlRequest)
             guard let httpResponse = response as? HTTPURLResponse,
                       httpResponse.statusCode >= 200 && httpResponse.statusCode <= 299 else {
-                print(String(data: data, encoding: .utf8) as Any)
+                Log.console(String(data: data, encoding: .utf8) as Any, .error, .nophan)
                 throw NophanError.NetworkRequestError
             }
             retryFailedRequests()
@@ -40,14 +41,14 @@ internal class NetworkEngine: Networking {
     internal func retryFailedRequests() {
         guard !isRetrying, !failedTasksQueue.isEmpty else { return }
         isRetrying = true
-        print("Retrying \(failedTasksQueue.count) Nophan tracking requests.")
+        Log.console("Retrying \(failedTasksQueue.count) Nophan tracking requests.", .info, .nophan)
         while !failedTasksQueue.isEmpty {
             guard let task = failedTasksQueue.popLast() else { return }
             Task.detached(priority: .background) {
                 do {
                     try await self.request(request: task)
                 } catch {
-                    print("Retry failed for request: \(task.parameters), error: \(error)")
+                    Log.console("Retry failed for request: \(task.parameters), error: \(error)", .warning, .nophan)
                 }
             }
         }
