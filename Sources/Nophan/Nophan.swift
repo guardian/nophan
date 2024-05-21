@@ -172,9 +172,9 @@ extension Nophan {
             let deviceId = try keychain.readDeviceId()
             return deviceId
         } catch {
-            if let keyChainError = error as? NophanError.KeychainErrorCase {
+            if let keyChainError = error as? NophanError {
                 switch keyChainError {
-                case .NoDeviceId:
+                case .KeychainError(.NoDeviceId):
                     let newDeviceId = UUID().uuidString
                     try keychain.saveDeviceId(value: newDeviceId)
                     return newDeviceId
