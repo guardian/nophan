@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import Qalam
 
 public typealias NophanUserId = String
 
@@ -79,7 +80,7 @@ extension Nophan {
                 let trackingRequest = try self.prepareRequest(for: event)
                 try await self.networkEngine.request(request: trackingRequest)
             } catch {
-                print("Failed to track Event")
+                Log.console("Failed to track Event", .error, .nophan)
             }
         }
     }
@@ -93,7 +94,7 @@ extension Nophan {
                 let trackingRequest = prepareRequest(for: configuration)
                 try await networkEngine.request(request: trackingRequest)
             } catch {
-                print("Failed to track Configuration")
+                Log.console("Failed to track Configuration", .error, .nophan)
             }
         }
     }
@@ -108,7 +109,7 @@ extension Nophan {
                 let trackingRequest = try prepareRequest(for: user)
                 try await networkEngine.request(request: trackingRequest)
             } catch {
-                print("Failed to track User")
+                Log.console("Failed to track User", .error, .nophan)
             }
         }
     }
@@ -180,7 +181,7 @@ extension Nophan {
                     try keychain.saveDeviceId(value: newDeviceId)
                     return newDeviceId
                 default:
-                    print("Some error has occured. \(error)")
+                    Log.console("Some error has occured. \(error)", .error, .nophan)
                 }
             }
         }
