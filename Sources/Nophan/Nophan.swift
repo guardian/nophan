@@ -6,7 +6,6 @@
 //
 
 import Foundation
-import UIKit
 
 public typealias NophanUserId = String
 
