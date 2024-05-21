@@ -7,9 +7,9 @@
 
 import Foundation
 
-/// `NophanEvent` defines a protocol for events that can be tracked within the FPA system.
+/// `NophanEventRepresentable` defines a protocol for events that can be tracked within the FPA system.
 /// Conforming types must provide a name and parameters for the event.
-public protocol NophanEvent {
+public protocol NophanEventRepresentable {
     /// The name of the event.
     var name: String { get set }
     
@@ -17,9 +17,9 @@ public protocol NophanEvent {
     var parameters: [String: String] { get set }
 }
 
-/// Example of conforming to the `NophanEvent` protocol:
+/// Example of conforming to the `NophanEventRepresentable` protocol:
 /// ```
-/// struct ExampleEvent: NophanEvent {
+/// struct ExampleEvent: NophanEventRepresentable {
 ///     var name: String
 ///     var parameters: [String: String]
 /// }

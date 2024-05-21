@@ -72,7 +72,7 @@ extension Nophan {
     
     /// Tracks the event relating to the user's activity in the app.
     /// - Parameter event: Struct containing data related to track the event.
-    public func trackEvent(_ event: NophanEvent) {
+    public func trackEvent(_ event: NophanEventRepresentable) {
         Task.detached { [weak self] in
             do {
                 guard let self else { return }
@@ -117,11 +117,12 @@ extension Nophan {
 extension Nophan {
     
     // Prepare the request for an event.
-    internal func prepareRequest(for event: NophanEvent) throws -> NophanRequest {
+    internal func prepareRequest(for event: NophanEventRepresentable) throws -> NophanRequest {
         var parameters: [String: Any] = ["name": event.name]
         parameters = event.parameters
             .reduce(into: parameters) { $0[$1.key] = $1.value }
         guard let configuration else { throw NophanError.ConfigurationError }
+        userParameters(parameters: &parameters)
         debuggingParameters(parameters: &parameters)
         trackingTypeParameters(type: .Event, parameters: &parameters)
         additionalParameters(parameters: &parameters)
@@ -152,7 +153,7 @@ extension Nophan {
     // Add parameters from the Configuration
     private func configurationParameters(configuration: NophanConfiguration?) -> [String:Any] {
         guard let configuration else { return [:] }
-        var parameters = [
+        return [
             "app_version": configuration.appVersion,
             "device_model": configuration.deviceModel,
             "os_version": configuration.iosVersion,
@@ -160,10 +161,6 @@ extension Nophan {
             "locale": configuration.locale,
             "os": configuration.operatingSystem
         ]
-        if let user = configuration.userId {
-            parameters["user"] = user
-        }
-        return parameters
     }
     
     // Get a unique persisting device ID from the Keychain.

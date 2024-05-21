@@ -8,7 +8,7 @@
 import Foundation
 @testable import Nophan
 
-struct TestEvent: NophanEvent {
+struct TestEvent: NophanEventRepresentable {
     var name: String
     var parameters: [String : String]
 }
@@ -34,7 +34,7 @@ class MockOphanManager: Analytics {
         trackUser()
     }
     
-    func trackEvent(_ event: NophanEvent) {
+    func trackEvent(_ event: NophanEventRepresentable) {
         guard let request = try? prepareRequest(for: event) else { return }
         Task {
             try? await networkEngine.request(request: request)
@@ -55,7 +55,7 @@ class MockOphanManager: Analytics {
         }
     }
     
-    func prepareRequest(for event: NophanEvent) throws -> NophanRequest {
+    func prepareRequest(for event: NophanEventRepresentable) throws -> NophanRequest {
         var parameters: [String: Any] = ["name": event.name]
         parameters = event.parameters
             .reduce(into: parameters) { $0[$1.key] = $1.value }

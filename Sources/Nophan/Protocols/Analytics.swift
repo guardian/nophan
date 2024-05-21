@@ -14,11 +14,11 @@ protocol Analytics {
     func setup(configuration: NophanConfiguration)
     func setUserIdentifier(id: NophanUserId)
     
-    func trackEvent(_ event: NophanEvent)
+    func trackEvent(_ event: NophanEventRepresentable)
     func trackConfiguration()
     func trackUser()
     
-    func prepareRequest(for event: NophanEvent) throws -> NophanRequest
+    func prepareRequest(for event: NophanEventRepresentable) throws -> NophanRequest
     func prepareRequest(for configuration: NophanConfiguration) -> NophanRequest
     func prepareRequest(for userId: NophanUserId) throws -> NophanRequest
 }
