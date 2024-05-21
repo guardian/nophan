@@ -192,9 +192,7 @@ extension Nophan {
     
     /// Attach debugging parameters.
     private func debuggingParameters(parameters: inout [String:Any]) {
-        if debug {
-            parameters["testing"] = "true"
-        }
+        parameters["testing"] = debug ? true : false
     }
     
     /// Attach user parameters.

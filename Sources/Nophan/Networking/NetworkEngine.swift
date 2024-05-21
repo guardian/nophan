@@ -38,8 +38,9 @@ internal class NetworkEngine: Networking {
     }
     
     internal func retryFailedRequests() {
-        guard !isRetrying, !failedTasksQueue.isEmpty else { print("No requests to retry."); return }
+        guard !isRetrying, !failedTasksQueue.isEmpty else { return }
         isRetrying = true
+        print("Retrying \(failedTasksQueue.count) Nophan tracking requests.")
         while !failedTasksQueue.isEmpty {
             guard let task = failedTasksQueue.popLast() else { return }
             Task.detached(priority: .background) {
