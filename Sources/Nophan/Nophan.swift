@@ -123,7 +123,7 @@ extension Nophan {
     
     // Prepare the request for an event.
     internal func prepareRequest(for event: NophanEventRepresentable) throws -> NophanRequest {
-        var parameters: [String: Any] = ["name": event.name]
+        var parameters: [String: Any] = ["event": event.name]
         parameters = event.parameters
             .reduce(into: parameters) { $0[$1.key] = $1.value }
         guard let configuration else { throw NophanError.ConfigurationError }
