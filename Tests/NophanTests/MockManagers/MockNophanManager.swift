@@ -10,7 +10,7 @@ import Foundation
 
 struct TestEvent: NophanEventRepresentable {
     var name: String
-    var parameters: [String : String]
+    var parameters: [String : Any]
 }
 
 class MockOphanManager: Analytics {

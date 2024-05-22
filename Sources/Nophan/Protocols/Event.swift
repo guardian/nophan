@@ -14,14 +14,14 @@ public protocol NophanEventRepresentable {
     var name: String { get set }
     
     /// A dictionary of parameters associated with the event.
-    var parameters: [String: String] { get set }
+    var parameters: [String: Any] { get set }
 }
 
 /// Example of conforming to the `NophanEventRepresentable` protocol:
 /// ```
 /// struct ExampleEvent: NophanEventRepresentable {
 ///     var name: String
-///     var parameters: [String: String]
+///     var parameters: [String: Any]
 /// }
 ///
 /// // Usage:
