@@ -29,6 +29,9 @@ public final class Nophan: Analytics {
     /// The networking engine used by the manager.
     private let networkEngine: Networking
     
+    // The Keychain manager used to fetch/save device id. This is initialised alongside the Configuration.
+    private var keychain: Keychain? = nil
+    
     /// The configuration for the FPA system. This is set through the `setup(configuration:)` method.
     public private(set) var configuration: NophanConfiguration?
     
@@ -51,6 +54,7 @@ public final class Nophan: Analytics {
     /// ```
     public func setup(configuration: NophanConfiguration) {
         self.configuration = configuration
+        self.keychain = NophanKeychainManager(service: configuration.bundleId, account: "nophan_device_id")
         trackConfiguration()
     }
     
@@ -167,8 +171,7 @@ extension Nophan {
     // Get a unique persisting device ID from the Keychain.
     private func getDeviceId() throws -> String {
         guard let configuration else { throw NophanError.ConfigurationError }
-        let keychain = NophanKeychainManager(service: configuration.bundleId, account: "nophan_device_id")
-        
+        guard let keychain else { throw NophanError.KeychainError(.Unconfigured) }
         // if device id is available in keychain, get it.
         do {
             let deviceId = try keychain.readDeviceId()

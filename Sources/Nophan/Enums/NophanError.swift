@@ -44,6 +44,9 @@ public enum NophanError: Error, Equatable {
     /// - `DeletionError`: Indicates an error occurred while deleting from the Keychain.
     public enum KeychainErrorCase: Error {
         
+        /// Indicates that the Keychain is not configured properly
+        case Unconfigured
+        
         /// Indicates that no device ID was found in the Keychain.
         case NoDeviceId
         
