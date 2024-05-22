@@ -170,7 +170,6 @@ extension Nophan {
     
     // Get a unique persisting device ID from the Keychain.
     private func getDeviceId() throws -> String {
-        guard let configuration else { throw NophanError.ConfigurationError }
         guard let keychain else { throw NophanError.KeychainError(.Unconfigured) }
         // if device id is available in keychain, get it.
         do {
