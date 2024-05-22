@@ -97,6 +97,7 @@ extension Nophan {
                 guard let self, let configuration else { throw NophanError.ConfigurationError }
                 let trackingRequest = prepareRequest(for: configuration)
                 try await networkEngine.request(request: trackingRequest)
+                Log.console("Configuration tracked successfully. : [unique_app_installation_id : \(String(describing: try? getDeviceId()))]")
             } catch {
                 Log.console("Failed to track Configuration", .error, .nophan)
             }
