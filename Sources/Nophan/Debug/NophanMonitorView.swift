@@ -18,9 +18,9 @@ public struct NophanMonitorView: View {
         VStack(alignment: .leading) {
             headerView()
             List {
-                ForEach(monitor.events) { event in
+                ForEach(monitor.events.sorted(by: {$0.deviceTimestamp > $1.deviceTimestamp})) { event in
                     Section {
-                        ForEach(event.parameters.keys.sorted().reversed(), id: \.self) { key in
+                        ForEach(event.parameters.keys.sorted(), id: \.self) { key in
                             if let value = event.parameters[key] {
                                 Text("\(key) : \(String(describing: value))")
                             }
@@ -38,9 +38,9 @@ public struct NophanMonitorView: View {
         VStack(alignment: .leading, spacing: 5) {
             VStack(alignment: .leading, spacing: 12) {
                 Text("Nophan Monitor")
-                    .font(.headlineBold, size: 30)
+                    .font(.headlineBold, size: 28)
                 Text("Latest Events")
-                    .font(.headlineMedium, size: 24)
+                    .font(.headlineMedium, size: 20)
                     .foregroundStyle(.gray)
             }
             .padding([.horizontal, .top])

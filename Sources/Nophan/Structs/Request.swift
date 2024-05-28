@@ -15,6 +15,10 @@ internal struct NophanRequest: Codable, Identifiable {
         return "POST"
     }
     
+    var deviceTimestamp: Double {
+        return (parameters["device_timestamp"] as? Double) ?? 0.0
+    }
+    
     enum CodingKeys: String, CodingKey {
         case endpointUrl, parameters, httpMethod
     }
