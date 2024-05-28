@@ -11,6 +11,8 @@ public struct NophanMonitorView: View {
     
     @ObservedObject var monitor = NophanMonitor.shared
     
+    public init() {}
+    
     public var body: some View {
         VStack(alignment: .leading) {
             headerView()
