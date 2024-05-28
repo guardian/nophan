@@ -36,11 +36,11 @@ public struct NophanMonitorView: View {
     @ViewBuilder
     func headerView() -> some View {
         VStack(alignment: .leading, spacing: 5) {
-            VStack(alignment: .leading, spacing: 5) {
+            VStack(alignment: .leading, spacing: 12) {
                 Text("Nophan Monitor")
-                    .font(.headlineBold, size: 22)
+                    .font(.headlineBold, size: 30)
                 Text("Latest Events")
-                    .font(.headlineMedium, size: 16)
+                    .font(.headlineMedium, size: 24)
                     .foregroundStyle(.gray)
             }
             .padding([.horizontal, .top])
