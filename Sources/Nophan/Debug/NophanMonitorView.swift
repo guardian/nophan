@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import GuardianFonts
 
 public struct NophanMonitorView: View {
     
@@ -19,7 +20,7 @@ public struct NophanMonitorView: View {
             List {
                 ForEach(monitor.events) { event in
                     Section {
-                        ForEach(event.parameters.keys.sorted(), id: \.self) { key in
+                        ForEach(event.parameters.keys.sorted().reversed(), id: \.self) { key in
                             if let value = event.parameters[key] {
                                 Text("\(key) : \(String(describing: value))")
                             }
@@ -37,10 +38,10 @@ public struct NophanMonitorView: View {
         VStack(alignment: .leading, spacing: 5) {
             VStack(alignment: .leading, spacing: 5) {
                 Text("Nophan Monitor")
-                    .font(.title)
-                    .bold()
+                    .font(.headlineBold, size: 22)
                 Text("Latest Events")
-                    .font(.headline)
+                    .font(.headlineMedium, size: 16)
+                    .foregroundStyle(.gray)
             }
             .padding([.horizontal, .top])
             VStack(spacing: 2) {

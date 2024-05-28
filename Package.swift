@@ -17,6 +17,7 @@ let package = Package(
     dependencies: [
         // Dependencies declare other packages that this package depends on.
         .package(url: "https://github.com/guardian/qalam.git", branch: "main"),
+        .package(url: "https://github.com/guardian/fonts.git", branch: "main")
     ],
     targets: [
         // Targets are the basic building blocks of a package, defining a module or a test suite.
@@ -25,7 +26,8 @@ let package = Package(
             name: "Nophan",
             dependencies: [
                 // Add Qalam as a dependency to the Nophan target
-                .product(name: "Qalam", package: "qalam")
+                .product(name: "Qalam", package: "qalam"),
+                .product(name: "GuardianFonts", package: "fonts")
             ]),
         .testTarget(
             name: "NophanTests",
