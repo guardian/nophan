@@ -1,5 +1,5 @@
 //
-//  File.swift
+//  RequestCache.swift
 //
 //
 //  Created by Usman Nazir on 28/05/2024.
@@ -82,6 +82,9 @@ extension RequestCache {
         do {
             let data = try Data(contentsOf: fileURL)
             failedTasksQueue = try decoder.decode([NophanRequest].self, from: data)
+        } catch let error as NSError where error.domain == NSCocoaErrorDomain && error.code == NSFileReadNoSuchFileError {
+            Log.console("No Failed Requests cache found on disk: \(error.localizedDescription)\nInitializing empty Failed Tasks Queue.", .error, .nophan)
+            failedTasksQueue = []
         } catch {
             Log.console("Failed to load failed requests from disk: \(error.localizedDescription)", .error, .nophan)
         }
