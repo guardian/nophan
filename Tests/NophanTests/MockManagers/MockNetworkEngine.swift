@@ -10,21 +10,21 @@ import Foundation
 
 class MockNetworkEngine: Networking {
     
-    var failedTasksQueue: [NophanRequest] = []
-    
+    var requestCache: Cache = MockCache()
     var shouldFail = false
     
     internal func request(request: NophanRequest) async throws {
         if shouldFail {
-            failedTasksQueue.append(request)
+            requestCache.addRequestToQueue(request)
             throw NophanError.NetworkRequestError
         }
     }
     
     internal func retryFailedRequests() {
-        guard !failedTasksQueue.isEmpty else { print("No requests to retry."); return }
-        while !failedTasksQueue.isEmpty {
-            guard let task = failedTasksQueue.popLast() else { return }
+        guard !requestCache.isEmpty else { print("No requests to retry."); return }
+        var requests = requestCache.getFailedRequests()
+        while !requests.isEmpty {
+            guard let task = requests.popLast() else { return }
             Task.detached(priority: .background) {
                 do {
                     try await self.request(request: task)

@@ -8,7 +8,7 @@
 import Foundation
 
 protocol Networking {
-    var failedTasksQueue: [NophanRequest] { get }
+    var requestCache: Cache { get }
     func request(request: NophanRequest) async throws
     func retryFailedRequests()
 }
