@@ -10,6 +10,7 @@ import Qalam
 
 internal class NetworkEngine: Networking {
 
+    private let monitor = NophanMonitor.shared
     internal var requestCache: Cache = RequestCache()
     private var isRetrying = false
     
@@ -17,7 +18,7 @@ internal class NetworkEngine: Networking {
     internal func request(request: NophanRequest) async throws {
         var urlRequest = URLRequest(url: request.endpointUrl)
         urlRequest.httpMethod = request.httpMethod
-        urlRequest.timeoutInterval = 30.0
+        urlRequest.timeoutInterval = 20.0
         do {
             urlRequest.httpBody = try JSONSerialization.data(withJSONObject: request.parameters)
             URLSession(configuration: .default).dataTask(with: urlRequest)
@@ -50,5 +51,9 @@ internal class NetworkEngine: Networking {
             }
         }
         isRetrying = false
+    }
+    
+    internal func updateNophanMonitor(event: NophanRequest) {
+        monitor.addEvent(event)
     }
 }

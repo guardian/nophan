@@ -7,7 +7,8 @@
 
 import Foundation
 
-internal struct NophanRequest: Codable {
+internal struct NophanRequest: Codable, Identifiable {
+    var id = UUID()
     var endpointUrl: URL
     var parameters: [String : Any]
     var httpMethod: String {
