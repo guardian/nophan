@@ -29,6 +29,7 @@ internal class NetworkEngine: Networking {
                 throw NophanError.NetworkRequestError
             }
             retryFailedRequests()
+            updateNophanMonitor(event: request)
         } catch {
             requestCache.addRequestToQueue(request)
             throw NophanError.NetworkRequestError
