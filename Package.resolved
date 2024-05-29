@@ -1,0 +1,14 @@
+{
+  "pins" : [
+    {
+      "identity" : "qalam",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/guardian/qalam.git",
+      "state" : {
+        "branch" : "main",
+        "revision" : "99d955af8a43c8ae3fd0c1c71ba2af099a49f2f6"
+      }
+    }
+  ],
+  "version" : 2
+}

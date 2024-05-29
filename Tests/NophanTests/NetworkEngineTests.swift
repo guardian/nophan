@@ -36,13 +36,19 @@ final class NetworkEngineTests: XCTestCase {
         // Wait before retry
         try? await Task.sleep(nanoseconds: 1 * 1_000_000_000) // 1 second
         
-        XCTAssertEqual(networkEngine.failedTasksQueue.last?.parameters["device_timestamp"] as? TimeInterval, deviceTimestamp,
+        var requests = networkEngine.requestCache.getFailedRequests()
+        
+        XCTAssertEqual(requests.last?.parameters["device_timestamp"] as? TimeInterval, deviceTimestamp,
                        "The Device Time-stamp should remain same event if the attempt is resumed after some time.")
+        
+        for failedRequest in requests { networkEngine.requestCache.addRequestToQueue(failedRequest) }
         
         networkEngine.shouldFail = false
         networkEngine.retryFailedRequests()
         
-        XCTAssertEqual(networkEngine.failedTasksQueue.count, 0,
+        requests = networkEngine.requestCache.getFailedRequests()
+        
+        XCTAssertEqual(requests.count, 0,
                        "The number of failed requests is 0 once the network engine is running properly.")
     }
 }

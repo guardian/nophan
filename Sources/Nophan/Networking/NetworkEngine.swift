@@ -9,8 +9,8 @@ import Foundation
 import Qalam
 
 internal class NetworkEngine: Networking {
-    
-    internal var failedTasksQueue = [NophanRequest]()
+
+    internal var requestCache: Cache = RequestCache()
     private var isRetrying = false
     
     /// Makes the request
@@ -29,21 +29,18 @@ internal class NetworkEngine: Networking {
             }
             retryFailedRequests()
         } catch {
-            addToRetryQueue(request: request)
+            requestCache.addRequestToQueue(request)
             throw NophanError.NetworkRequestError
         }
     }
     
-    private func addToRetryQueue(request: NophanRequest) {
-        failedTasksQueue.append(request)
-    }
-    
     internal func retryFailedRequests() {
-        guard !isRetrying, !failedTasksQueue.isEmpty else { return }
+        guard !isRetrying, !requestCache.isEmpty else { return }
         isRetrying = true
-        Log.console("Retrying \(failedTasksQueue.count) Nophan tracking requests.", .info, .nophan)
-        while !failedTasksQueue.isEmpty {
-            guard let task = failedTasksQueue.popLast() else { return }
+        var requests = requestCache.getFailedRequests()
+        Log.console("Retrying \(requests.count) Nophan tracking requests.", .info, .nophan)
+        while !requests.isEmpty {
+            guard let task = requests.popLast() else { return }
             Task.detached(priority: .background) {
                 do {
                     try await self.request(request: task)

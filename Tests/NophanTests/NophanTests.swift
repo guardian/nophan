@@ -29,7 +29,8 @@ final class NophanTests: XCTestCase {
     func testTrackEventWithoutConfiguration() async {
         let event = TestEvent(name: "Test", parameters: ["event": "testEvent"])
         nophan.trackEvent(event)
-        XCTAssertEqual(networkEngine.failedTasksQueue.count, 0, "No new request has been added.")
+        let requests = networkEngine.requestCache.getFailedRequests()
+        XCTAssertEqual(requests.count, 0, "No new request has been added.")
     }
     
     func testSetUserIdentifier() async {
@@ -48,8 +49,9 @@ final class NophanTests: XCTestCase {
         nophan.setup(configuration: configuration)
         nophan.trackEvent(event)
         try? await Task.sleep(nanoseconds: 1 * 1_000_000_000)
-        XCTAssertEqual(networkEngine.failedTasksQueue.count, 1)
-        XCTAssertEqual(networkEngine.failedTasksQueue.last?.parameters["name"] as! String, "Test")
+        let requests = networkEngine.requestCache.getFailedRequests()
+        XCTAssertEqual(requests.count, 1)
+        XCTAssertEqual(requests.last?.parameters["name"] as! String, "Test")
     }
     
     func testTrackConfiguration() async {
@@ -57,8 +59,9 @@ final class NophanTests: XCTestCase {
         nophan.setup(configuration: configuration)
         nophan.trackConfiguration()
         try? await Task.sleep(nanoseconds: 1 * 1_000_000_000)
-        XCTAssertEqual(networkEngine.failedTasksQueue.count, 1)
-        XCTAssertEqual(networkEngine.failedTasksQueue.last?.parameters["os"] as? String, configuration.operatingSystem)
+        let requests = networkEngine.requestCache.getFailedRequests()
+        XCTAssertEqual(requests.count, 1)
+        XCTAssertEqual(requests.last?.parameters["os"] as? String, configuration.operatingSystem)
     }
     
     func testTrackUser() async {
@@ -67,7 +70,8 @@ final class NophanTests: XCTestCase {
         nophan.setup(configuration: configuration)
         nophan.setUserIdentifier(id: userId)
         try? await Task.sleep(nanoseconds: 1 * 1_000_000_000)
-        XCTAssertEqual(networkEngine.failedTasksQueue.count, 1)
-        XCTAssertEqual(networkEngine.failedTasksQueue.last?.parameters["user"] as? String, "user123")
+        let requests = networkEngine.requestCache.getFailedRequests()
+        XCTAssertEqual(requests.count, 1)
+        XCTAssertEqual(requests.last?.parameters["user"] as? String, "user123")
     }
 }
