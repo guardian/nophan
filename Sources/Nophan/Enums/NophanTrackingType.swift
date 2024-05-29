@@ -16,6 +16,7 @@ enum TrackingType: String {
     case Configuration
     case User
     case Event
+    case Consent
     
     /// Provides the string value associated with each `TrackingType` case for use in parameters.
     ///
@@ -34,6 +35,8 @@ enum TrackingType: String {
             return "user"
         case .Event:
             return "event"
+        case .Consent:
+            return "consent"
         }
     }
 }

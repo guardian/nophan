@@ -67,6 +67,15 @@ public final class Nophan: Analytics {
         trackConfiguration()
     }
     
+    /// Sets up the consent for the FPA system.
+    /// Call this function as soon as the consent is updated.
+    ///
+    /// - Parameter consent: The consent to be used.
+    ///
+    public func updateConsent(with consent: NophanConsent) {
+        trackConsent(consent: consent)
+    }
+    
     /// Sets the user identifier in the configuration.
     /// Call this function whenever the user registers/signs-in.
     ///
@@ -127,6 +136,20 @@ extension Nophan {
             }
         }
     }
+    
+    /// Tracks the event relating to consent.
+    /// This event is tracked on app cold starts and when consent is updated.
+    internal func trackConsent(consent: NophanConsent) {
+        Task.detached { [weak self] in
+            do {
+                guard let self, let configuration else { throw NophanError.ConfigurationError }
+                let trackingRequest = try prepareRequest(for: consent)
+                try await networkEngine.request(request: trackingRequest)
+            } catch {
+                Log.console("Failed to track Consent", .error, .nophan)
+            }
+        }
+    }
 }
 
 extension Nophan {
@@ -161,6 +184,17 @@ extension Nophan {
         guard let configuration else { throw NophanError.ConfigurationError }
         debuggingParameters(parameters: &parameters)
         trackingTypeParameters(type: .User, parameters: &parameters)
+        additionalParameters(parameters: &parameters)
+        return NophanRequest(endpointUrl: configuration.endpointUrl, parameters: parameters)
+    }
+    
+    // Prepare the request for a consent change.
+    internal func prepareRequest(for consent: NophanConsent) throws -> NophanRequest {
+        var parameters: [String: Any] = consent.parameters
+        guard let configuration else { throw NophanError.ConfigurationError }
+        userParameters(parameters: &parameters)
+        debuggingParameters(parameters: &parameters)
+        trackingTypeParameters(type: .Consent, parameters: &parameters)
         additionalParameters(parameters: &parameters)
         return NophanRequest(endpointUrl: configuration.endpointUrl, parameters: parameters)
     }
