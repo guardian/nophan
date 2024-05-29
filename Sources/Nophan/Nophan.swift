@@ -26,6 +26,15 @@ public final class Nophan: Analytics {
     public private(set) var debug: Bool = false
 #endif
     
+    public var deviceId: String {
+        do {
+            return try getDeviceId()
+        } catch {
+            Log.console("Failed to get device id.", .error, .nophan)
+        }
+        return "?"
+    }
+    
     /// The networking engine used by the manager.
     private let networkEngine: Networking
     
