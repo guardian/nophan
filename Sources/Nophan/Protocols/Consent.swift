@@ -13,6 +13,13 @@ public struct NophanConsent {
     let consentUUID: String
     let cmpVersion: String
     
+    public init(jurisdiction: String, consent: String, consentUUID: String, cmpVersion: String) {
+        self.jurisdiction = jurisdiction
+        self.consent = consent
+        self.consentUUID = consentUUID
+        self.cmpVersion = cmpVersion
+    }
+    
     var parameters: [String:String] {
         return [
             "jurisdiction": jurisdiction,
