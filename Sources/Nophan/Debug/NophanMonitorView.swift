@@ -6,7 +6,7 @@
 //
 
 import SwiftUI
-import GuardianFonts
+//import GuardianFonts
 
 public struct NophanMonitorView: View {
     
@@ -38,9 +38,9 @@ public struct NophanMonitorView: View {
         VStack(alignment: .leading, spacing: 5) {
             VStack(alignment: .leading, spacing: 12) {
                 Text("Nophan Monitor")
-                    .font(.headlineBold, size: 28)
+//                    .font(.headlineBold, size: 28)
                 Text("Latest Events")
-                    .font(.headlineMedium, size: 20)
+//                    .font(.headlineMedium, size: 20)
                     .foregroundStyle(.gray)
             }
             .padding([.horizontal, .top])
