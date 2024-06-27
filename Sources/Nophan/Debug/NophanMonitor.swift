@@ -16,11 +16,16 @@ internal class NophanMonitor: ObservableObject {
     /// An array to store the last 15 NophanRequest objects.
     @Published private(set) var events: [NophanRequest] = []
 
+    /// Dispatch queue to modify events in a Thread Safe manner.
+    let queue = DispatchQueue(label: "NophanMonitorEventsQueue")
+    
     /// Adds a new event to the array, ensuring only the last 15 events are kept.
     func addEvent(_ event: NophanRequest) {
-        if events.count >= 15 {
-            events.removeFirst()
+        queue.async(flags: .barrier) {
+            if self.events.count >= 15 {
+                self.events.removeFirst()
+            }
+            self.events.append(event)
         }
-        events.append(event)
     }
 }
