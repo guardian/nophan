@@ -190,7 +190,7 @@ extension Nophan {
     
     // Prepare the request for a consent change.
     internal func prepareRequest(for consent: NophanConsent) throws -> NophanRequest {
-        var parameters: [String: Any] = consent.parameters as [String : Any]
+        var parameters: [String: Any] = consent.parameters
         guard let configuration else { throw NophanError.ConfigurationError }
         userParameters(parameters: &parameters)
         debuggingParameters(parameters: &parameters)
