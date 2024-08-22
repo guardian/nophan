@@ -12,20 +12,27 @@ public struct NophanConsent {
     let consent: String
     let consentUUID: String
     let cmpVersion: String
-    
-    public init(jurisdiction: String, consent: String, consentUUID: String, cmpVersion: String) {
+    let consentedAll: Bool?
+
+    public init(jurisdiction: String, 
+                consent: String,
+                consentUUID: String,
+                cmpVersion: String,
+                consentAll: Bool? = nil) {
         self.jurisdiction = jurisdiction
         self.consent = consent
         self.consentUUID = consentUUID
         self.cmpVersion = cmpVersion
+        self.consentedAll = consentAll
     }
     
-    var parameters: [String:String] {
+    var parameters: [String: String?] {
         return [
             "jurisdiction": jurisdiction,
             "consent": consent,
             "consentUUID": consentUUID,
-            "cmpVersion": cmpVersion
+            "cmpVersion": cmpVersion,
+            "consentedAll": consentedAll?.description
         ]
     }
 }
