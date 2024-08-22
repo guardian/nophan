@@ -18,12 +18,12 @@ public struct NophanConsent {
                 consent: String,
                 consentUUID: String,
                 cmpVersion: String,
-                consentAll: String) {
+                consentedAll: String) {
         self.jurisdiction = jurisdiction
         self.consent = consent
         self.consentUUID = consentUUID
         self.cmpVersion = cmpVersion
-        self.consentedAll = consentAll
+        self.consentedAll = consentedAll
     }
     
     var parameters: [String: String] {
