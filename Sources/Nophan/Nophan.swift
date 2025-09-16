@@ -16,8 +16,8 @@ public typealias NophanUserId = String
 public final class Nophan: Analytics {
     
     /// Shared instance of `Nophan`.
-    public static var shared = Nophan()
-    
+    @MainActor public static var shared = Nophan()
+
 #if DEBUG
     /// Indicates whether the manager is in debug mode. This is `true` in debug builds.
     public private(set) var debug: Bool = true
