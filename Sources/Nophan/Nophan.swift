@@ -160,7 +160,7 @@ extension Nophan {
         parameters = event.parameters
             .reduce(into: parameters) { $0[$1.key] = $1.value }
         guard let configuration else { throw NophanError.ConfigurationError }
-        configurationParameters(configuration: configuration, parameters: &parameters)
+        condensedConfigurationParameters(configuration: configuration, parameters: &parameters)
         userParameters(parameters: &parameters)
         debuggingParameters(parameters: &parameters)
         trackingTypeParameters(type: .Event, parameters: &parameters)
@@ -209,6 +209,13 @@ extension Nophan {
         parameters["os_version"] = configuration.iosVersion
         parameters["build"] = configuration.build
         parameters["locale"] = configuration.locale
+        parameters["os"] = configuration.operatingSystem
+    }
+
+    private func condensedConfigurationParameters(configuration: NophanConfiguration?, parameters: inout [String:Any]) {
+        guard let configuration else { return }
+        parameters["app_version"] = configuration.appVersion
+        parameters["build"] = configuration.build
         parameters["os"] = configuration.operatingSystem
     }
 
