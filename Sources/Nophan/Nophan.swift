@@ -14,10 +14,10 @@ public typealias NophanUserId = String
 /// and networking engine of the Nophan system. It provides methods to set up the
 /// configuration and user identifier.
 public final class Nophan: Analytics {
-    
+
     /// Shared instance of `Nophan`.
     public static var shared = Nophan()
-    
+
 #if DEBUG
     /// Indicates whether the manager is in debug mode. This is `true` in debug builds.
     public private(set) var debug: Bool = true
@@ -25,7 +25,7 @@ public final class Nophan: Analytics {
     /// Indicates whether the manager is in debug mode. This is `false` in debug builds.
     public private(set) var debug: Bool = false
 #endif
-    
+
     public var deviceId: String {
         do {
             return try getDeviceId()
@@ -34,23 +34,23 @@ public final class Nophan: Analytics {
         }
         return "?"
     }
-    
+
     /// The networking engine used by the manager.
     private let networkEngine: Networking
-    
+
     // The Keychain manager used to fetch/save device id. This is initialised alongside the Configuration.
     private var keychain: Keychain? = nil
-    
+
     /// The configuration for the FPA system. This is set through the `setup(configuration:)` method.
     public private(set) var configuration: NophanConfiguration?
-    
+
     /// Initializes a new instance of `Nophan`.
     ///
     /// - Parameter networkEngine: The networking engine to be used by the manager. Defaults to `NetworkEngine()`.
     internal init(networkEngine: Networking = NetworkEngine()) {
         self.networkEngine = networkEngine
     }
-    
+
     /// Sets up the configuration for the FPA system.
     /// Call this function as soon as the app cold-starts.
     ///
@@ -66,7 +66,7 @@ public final class Nophan: Analytics {
         self.keychain = NophanKeychainManager(service: configuration.bundleId, account: "nophan_device_id")
         trackConfiguration()
     }
-    
+
     /// Sets up the consent for the FPA system.
     /// Call this function as soon as the consent is updated.
     ///
@@ -75,7 +75,7 @@ public final class Nophan: Analytics {
     public func updateConsent(with consent: NophanConsent) {
         trackConsent(consent: consent)
     }
-    
+
     /// Sets the user identifier in the configuration.
     /// Call this function whenever the user registers/signs-in.
     ///
@@ -92,7 +92,7 @@ public final class Nophan: Analytics {
 }
 
 extension Nophan {
-    
+
     /// Tracks the event relating to the user's activity in the app.
     /// - Parameter event: Struct containing data related to track the event.
     public func trackEvent(_ event: NophanEventRepresentable) {
@@ -106,7 +106,7 @@ extension Nophan {
             }
         }
     }
-    
+
     /// Tracks the event relating to the app configuration.
     /// This is always tracked on app cold-starts.
     internal func trackConfiguration() {
@@ -121,7 +121,7 @@ extension Nophan {
             }
         }
     }
-    
+
     /// Tracks the event relating to the user's identity logging.
     /// This event is tracked when the user registers/signs-in/signs-out in the app.
     internal func trackUser() {
@@ -136,13 +136,13 @@ extension Nophan {
             }
         }
     }
-    
+
     /// Tracks the event relating to consent.
     /// This event is tracked on app cold starts and when consent is updated.
     internal func trackConsent(consent: NophanConsent) {
         Task.detached { [weak self] in
             do {
-                guard let self, let configuration else { throw NophanError.ConfigurationError }
+                guard let self else { throw NophanError.ConfigurationError }
                 let trackingRequest = try prepareRequest(for: consent)
                 try await networkEngine.request(request: trackingRequest)
             } catch {
@@ -153,30 +153,32 @@ extension Nophan {
 }
 
 extension Nophan {
-    
+
     // Prepare the request for an event.
     internal func prepareRequest(for event: NophanEventRepresentable) throws -> NophanRequest {
         var parameters: [String: Any] = ["event": event.name]
         parameters = event.parameters
             .reduce(into: parameters) { $0[$1.key] = $1.value }
         guard let configuration else { throw NophanError.ConfigurationError }
+        condensedConfigurationParameters(configuration: configuration, parameters: &parameters)
         userParameters(parameters: &parameters)
         debuggingParameters(parameters: &parameters)
         trackingTypeParameters(type: .Event, parameters: &parameters)
         additionalParameters(parameters: &parameters)
         return NophanRequest(endpointUrl: configuration.endpointUrl, parameters: parameters)
     }
-    
+
     // Prepare the request for a configuration.
     internal func prepareRequest(for configuration: NophanConfiguration) -> NophanRequest {
-        var parameters: [String:Any] = configurationParameters(configuration: configuration)
+        var parameters = [String:Any]()
+        configurationParameters(configuration: configuration, parameters: &parameters)
         userParameters(parameters: &parameters)
         debuggingParameters(parameters: &parameters)
         trackingTypeParameters(type: .Configuration, parameters: &parameters)
         additionalParameters(parameters: &parameters)
         return NophanRequest(endpointUrl: configuration.endpointUrl, parameters: parameters)
     }
-    
+
     // Prepare the request for a user id.
     internal func prepareRequest(for userId: NophanUserId) throws -> NophanRequest {
         var parameters = [String:Any]()
@@ -187,7 +189,7 @@ extension Nophan {
         additionalParameters(parameters: &parameters)
         return NophanRequest(endpointUrl: configuration.endpointUrl, parameters: parameters)
     }
-    
+
     // Prepare the request for a consent change.
     internal func prepareRequest(for consent: NophanConsent) throws -> NophanRequest {
         var parameters: [String: Any] = consent.parameters
@@ -198,20 +200,26 @@ extension Nophan {
         additionalParameters(parameters: &parameters)
         return NophanRequest(endpointUrl: configuration.endpointUrl, parameters: parameters)
     }
-    
+
     // Add parameters from the Configuration
-    private func configurationParameters(configuration: NophanConfiguration?) -> [String:Any] {
-        guard let configuration else { return [:] }
-        return [
-            "app_version": configuration.appVersion,
-            "device_model": configuration.deviceModel,
-            "os_version": configuration.iosVersion,
-            "build": configuration.build,
-            "locale": configuration.locale,
-            "os": configuration.operatingSystem
-        ]
+    private func configurationParameters(configuration: NophanConfiguration?, parameters: inout [String:Any]) {
+        guard let configuration else { return }
+        parameters["app_version"] = configuration.appVersion
+        parameters["device_model"] = configuration.deviceModel
+        parameters["os_version"] = configuration.iosVersion
+        parameters["build"] = configuration.build
+        parameters["locale"] = configuration.locale
+        parameters["os"] = configuration.operatingSystem
     }
-    
+
+    private func condensedConfigurationParameters(configuration: NophanConfiguration?, parameters: inout [String:Any]) {
+        guard let configuration else { return }
+        parameters["app_version"] = configuration.appVersion
+        parameters["build"] = configuration.build
+        parameters["os"] = configuration.operatingSystem
+        parameters["os_version"] = configuration.iosVersion
+    }
+
     // Get a unique persisting device ID from the Keychain.
     private func getDeviceId() throws -> String {
         guard let keychain else { throw NophanError.KeychainError(.Unconfigured) }
@@ -233,24 +241,24 @@ extension Nophan {
         }
         throw NophanError.DeviceIdError
     }
-    
+
     /// Attach debugging parameters.
     private func debuggingParameters(parameters: inout [String:Any]) {
         parameters["testing"] = debug ? true : false
     }
-    
+
     /// Attach user parameters.
     private func userParameters(parameters: inout [String:Any]) {
         if let configuration, let user = configuration.userId {
             parameters["user"] = user
         }
     }
-    
+
     /// Attach tracking-type parameters.
     private func trackingTypeParameters(type: TrackingType, parameters: inout [String:Any]) {
         parameters["tracking_type"] = type.parameterValue
     }
-    
+
     /// Attach tracking-type and time-stamp parameters.
     private func additionalParameters(parameters: inout [String:Any]) {
         parameters["device_timestamp"] = Date().timeIntervalSince1970 * 1000
