@@ -217,6 +217,7 @@ extension Nophan {
         parameters["app_version"] = configuration.appVersion
         parameters["build"] = configuration.build
         parameters["os"] = configuration.operatingSystem
+        parameters["os_version"] = configuration.iosVersion
     }
 
     // Get a unique persisting device ID from the Keychain.
