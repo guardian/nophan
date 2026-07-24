@@ -8,15 +8,6 @@
         "branch" : "main",
         "revision" : "8861ba9a4f5515f3c878ee9943ad1ec13f27f438"
       }
-    },
-    {
-      "identity" : "qalam",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/guardian/qalam.git",
-      "state" : {
-        "branch" : "main",
-        "revision" : "c17bfc9aede5246fc70e5ccc0766ca3146520c32"
-      }
     }
   ],
   "version" : 2
