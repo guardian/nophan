@@ -16,7 +16,7 @@ let package = Package(
     ],
     dependencies: [
         // Dependencies declare other packages that this package depends on.
-        .package(url: "https://github.com/guardian/qalam.git", branch: "main"),
+        .package(url: "https://github.com/guardian/qalam.git", from: "1.0.4"),
         .package(url: "https://github.com/guardian/fonts.git", branch: "main")
     ],
     targets: [
