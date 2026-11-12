@@ -27,7 +27,7 @@ public struct NophanConfiguration {
     /// The version of iOS running on the device.
     let iosVersion: String
     
-    /// The model of the device.
+    /// The hardware model identifier of the device, e.g. "iPhone16,2".
     let deviceModel: String
     
     /// The bundle identifier of the app.
@@ -56,7 +56,7 @@ public struct NophanConfiguration {
         self.appVersion = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "Unknown"
         self.build = Bundle.main.object(forInfoDictionaryKey: "CFBundleVersion") as? String ?? "Unknown"
         self.iosVersion = UIDevice.current.systemVersion
-        self.deviceModel = UIDevice.current.name
+        self.deviceModel = DeviceModel.identifier
         self.bundleId = Bundle.main.bundleIdentifier!
         self.locale = Locale.current.identifier
         self.operatingSystem = UIDevice.current.systemName

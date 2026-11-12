@@ -63,6 +63,12 @@ final class NophanTests: XCTestCase {
         XCTAssertEqual(requests.count, 1)
         XCTAssertEqual(requests.last?.parameters["os"] as? String, configuration.operatingSystem)
     }
+
+    func testConfigurationDeviceModelIsHardwareIdentifier() {
+        let configuration = NophanConfiguration(endpointUrl: endpointUrl)
+        XCTAssertFalse(["iPhone", "iPad"].contains(configuration.deviceModel), "Device model should not be the generic UIDevice value")
+        XCTAssertTrue(configuration.deviceModel.contains(","), "Device model should be a hardware identifier such as iPhone16,2")
+    }
     
     func testTrackUser() async {
         let userId = "user123"
