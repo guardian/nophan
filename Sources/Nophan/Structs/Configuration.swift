@@ -27,7 +27,7 @@ public struct NophanConfiguration {
     /// The version of iOS running on the device.
     let iosVersion: String
     
-    /// The model of the device.
+    /// The hardware model identifier of the device, e.g. "iPhone16,2".
     let deviceModel: String
     
     /// The bundle identifier of the app.
@@ -44,19 +44,21 @@ public struct NophanConfiguration {
     /// - Parameters:
     ///   - endpointUrl: The endpoint URL for the FPA system.
     ///   - userId: The user ID associated with the configuration. Defaults to `nil`.
+    ///   - deviceModel: Overrides the device model sent to the FPA system. Defaults to `nil`,
+    ///     in which case the hardware identifier (e.g. "iPhone16,2") is used.
     ///
     /// Example usage:
     /// ```
     /// let config = NophanConfiguration(endpointUrl: URL(string: "https://api.example.com")!)
     /// print(config.appVersion) // Prints the app version
     /// ```
-    public init(endpointUrl: URL, userId: String? = nil) {
+    public init(endpointUrl: URL, userId: String? = nil, deviceModel: String? = nil) {
         self.endpointUrl = endpointUrl
         self.userId = userId
         self.appVersion = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "Unknown"
         self.build = Bundle.main.object(forInfoDictionaryKey: "CFBundleVersion") as? String ?? "Unknown"
         self.iosVersion = UIDevice.current.systemVersion
-        self.deviceModel = UIDevice.current.name
+        self.deviceModel = deviceModel ?? DeviceModel.identifier
         self.bundleId = Bundle.main.bundleIdentifier!
         self.locale = Locale.current.identifier
         self.operatingSystem = UIDevice.current.systemName
